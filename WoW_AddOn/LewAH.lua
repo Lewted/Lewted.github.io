@@ -34,7 +34,7 @@ local function OnEvent(self, event, ...)
             end
             if (lewdb[name] == nil) then
                lewdb[name] = {['id'] = itemId, 
-                  ['listings'] = {}
+                              ['listings'] = {}
                }
             end
             
