@@ -15,6 +15,23 @@ function SlashCmdList.LEWAH(msg)
    end      
 end
 
+SLASH_LEWAHITEM1 = "/lahdb";
+function SlashCmdList.LEWAHITEM(msg)
+   print(msg);
+   --lewdb = {};
+   for i = msg, (msg+10000), 1 do
+      itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType,
+      itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice =
+      GetItemInfo(i);
+      if itemLink ~= nil then 
+         lewdb[tostring(i)] = {itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice};
+      end
+      if(i == (msg+10000)) then
+         print("done");
+      end
+   end
+end
+
 local function OnEvent(self, event, ...)
    if(event == 'AUCTION_ITEM_LIST_UPDATE') then
       if(dothingy == false) then
