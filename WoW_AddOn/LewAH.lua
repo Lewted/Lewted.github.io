@@ -1,5 +1,5 @@
 scan_date = date("%m/%d/%y %H:%M:%S");
-lewdb = {['scanDate'] = scan_date};
+lewdb = {};
 message("I'm on goober watch, and my radars are going off!");
 
 dothingy = false;
@@ -16,25 +16,31 @@ function SlashCmdList.LEWAH(msg)
 end
 
 local function OnEvent(self, event, ...)
-	print(event, ...)
    if(event == 'AUCTION_ITEM_LIST_UPDATE') then
       if(dothingy == false) then
-         print('AUCTION_ITEM_LIST_UPDATE but no thingy :<');
+--         print('AUCTION_ITEM_LIST_UPDATE but no thingy :<');
       else
-         message('yay!');
-         for y = 1, 100000, 1 do
+         lewdb = {};
+         lewdb['scanDate'] = scan_date;
+         for y = 1, 1000000, 1 do
             local name, texture, count, quality, canUse, level, levelColHeader, minBid,
             minIncrement, buyoutPrice, bidAmount, highBidder, bidderFullName, owner,
             ownerFullName, saleStatus, itemId, hasAllInfo = GetAuctionItemInfo("list", y);
             --print(name .. " " .. itemId .. " " .. buyoutPrice)
-            print(y)
+            --print(y)
+
             if (name == nil) then
-               message("LewAH hit a null value on item " .. y);
+               print("LewAH hit a null value on item " .. y);
                return;
             end
+
+            if (name == "") then
+               name = tostring(itemId)
+            end
+
             if (lewdb[name] == nil) then
                lewdb[name] = {['id'] = itemId, 
-                              ['listings'] = {}
+                  ['listings'] = {}
                }
             end
             
