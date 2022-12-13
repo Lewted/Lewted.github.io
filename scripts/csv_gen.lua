@@ -1,10 +1,11 @@
+-- change filename to scan data (ex. "Dec_12")
+filename = "Dec_13"
+
 listings = {"texture", "count", "quality", "canUse", "level",
  	"levelColHeader", "minBid", "minIncrement", "buyoutPrice",
   	"bidAmount", "highBidder", "bidderFullName", "owner",
    	"ownerFullName", "saleStatus"}
 
---filename = "Dec_12"
-filename = "sample"
 current_dir=(io.popen"cd":read'*l'):sub(1, -8):gsub("\\", "/") .. "Data/"
 
 file = io.open(current_dir .. filename .. ".csv", "a")
