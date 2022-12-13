@@ -3,8 +3,8 @@ listings = {"texture", "count", "quality", "canUse", "level",
   	"bidAmount", "highBidder", "bidderFullName", "owner",
    	"ownerFullName", "saleStatus"}
 
-filename = "Dec_11"
---filename = "sample"
+--filename = "Dec_12"
+filename = "sample"
 current_dir=(io.popen"cd":read'*l'):sub(1, -8):gsub("\\", "/") .. "Data/"
 
 file = io.open(current_dir .. filename .. ".csv", "a")
