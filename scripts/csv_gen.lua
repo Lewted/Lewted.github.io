@@ -4,7 +4,8 @@ filename = "Dec_13"
 listings = {"texture", "count", "quality", "canUse", "level",
  	"levelColHeader", "minBid", "minIncrement", "buyoutPrice",
   	"bidAmount", "highBidder", "bidderFullName", "owner",
-   	"ownerFullName", "saleStatus"}
+   	"ownerFullName", "saleStatus", "itemName", "itemLink", "itemRarity", "itemLevel", "itemMinLevel", "itemType", "itemSubType", "itemStackCount", 
+         "itemEquipLoc", "itemTexture", "itemSellPrice", "classID", "subclassID", "bindType", "expacID", "setID", "isCraftingReagent"}
 
 current_dir=(io.popen"cd":read'*l'):sub(1, -8):gsub("\\", "/") .. "Data/"
 
@@ -22,7 +23,8 @@ file:write(cats, "\n")
 
 local f = assert(loadfile(current_dir .. filename .. ".lua"))
 f()
-
+local fd = assert(loadfile(current_dir .. "item-database" .. ".lua"))
+fd()
 
 function flattenRecursive(e, result)
     if type(e) == "table" then
@@ -38,6 +40,10 @@ function flatten (e)
     local result = {}
     flattenRecursive(e, result)
     return result
+end
+
+function isInteger(str)
+	return not (str == "" or str:find("%D"))
 end
 
 scandate = ""
@@ -57,9 +63,16 @@ function csv_gen(tb)
 						for k2,v2 in pairs(v1) do
 							res = ""
 							print(k, "listing #", k2, "----------")
-							res = res .. k .. ","
+							if isInteger(k) then
+								res = res .. itemdb[k][1] .. ","
+							else 
+								res = res .. k .. ","
+							end
 							res = res .. id .. ","
 							for k3,v3 in pairs(flatten(v2)) do
+								res = res .. tostring(v3) .. ","
+							end
+							for k3,v3 in pairs(itemdb[tostring(id)]) do
 								res = res .. tostring(v3) .. ","
 							end
 							res = res:sub(1,-2)
@@ -73,6 +86,7 @@ function csv_gen(tb)
 end
 
 csv_gen(lewdb)
+
 file:write(scandate, "\n")
 
 io.close(file)
