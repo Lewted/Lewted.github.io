@@ -6,9 +6,13 @@ LewAH_scan_date = date("%m/%d/%y %H:%M:%S");
 LewAH_scan_ah = false;
 LewAH_store_items = false;
 
+
+
+
+
 --stores all auction house data in lewdb
-SLASH_LAH1 = "/lewah";
-function SlashCmdList.LAH(msg)
+SLASH_LEWAH1 = "/lewah";
+function SlashCmdList.LEWAH(msg)
    local canQuery,canQueryAll = CanSendAuctionQuery();
    if (canQueryAll == true) then
       LewAH_scan_ah = true;
@@ -17,6 +21,15 @@ function SlashCmdList.LAH(msg)
       message('Can not query all yet, goober.');
    end      
 end
+
+SLASH_LEWAHMAN1 = "/lewahmanual";
+function SlashCmdList.LEWAHMAN(msg)
+   LEWAH_AILU();
+end
+
+
+
+
 
 --stores all item data from the game files. This only needs to be run once every expansion.
 --disable addons for this to work fully, but will still need to be run multiple times because caching bugs.
@@ -69,35 +82,42 @@ function SlashCmdList.LEWDBFULL(msg)
    end
 end
 
+
+
+function LEWAH_AILU ()
+   lewdb = {};
+   LewAH_scan_date = date("%m/%d/%y %H:%M:%S")
+   lewdb['scanDate'] = LewAH_scan_date;
+   for y = 1, 1000000, 1 do
+      local name, texture, count, quality, canUse, level, levelColHeader, minBid,
+      minIncrement, buyoutPrice, bidAmount, highBidder, bidderFullName, owner,
+      ownerFullName, saleStatus, itemId, hasAllInfo = GetAuctionItemInfo("list", y);
+
+      if (name == nil) then
+         print("LewAH hit a null value on item " .. y);
+         return;
+      end
+
+      if (name == "") then
+         name = tostring(itemId)
+      end
+
+      if (lewdb[name] == nil) then
+         lewdb[name] = {['id'] = itemId, 
+            ['listings'] = {}
+         }
+      end
+      
+      table.insert(lewdb[name]['listings'], {texture, count, quality, canUse, level, levelColHeader, minBid, minIncrement, buyoutPrice, bidAmount, highBidder, bidderFullName, owner, ownerFullName, saleStatus});
+   end
+end
+
+
 local function OnEvent(self, event, ...)
    if(event == 'AUCTION_ITEM_LIST_UPDATE') then
       if (LewAH_scan_ah == true) then
-         lewdb = {};
-         LewAH_scan_date = date("%m/%d/%y %H:%M:%S")
-         lewdb['scanDate'] = LewAH_scan_date;
-         for y = 1, 1000000, 1 do
-            local name, texture, count, quality, canUse, level, levelColHeader, minBid,
-            minIncrement, buyoutPrice, bidAmount, highBidder, bidderFullName, owner,
-            ownerFullName, saleStatus, itemId, hasAllInfo = GetAuctionItemInfo("list", y);
-
-            if (name == nil) then
-               print("LewAH hit a null value on item " .. y);
-               return;
-            end
-
-            if (name == "") then
-               name = tostring(itemId)
-            end
-
-            if (lewdb[name] == nil) then
-               lewdb[name] = {['id'] = itemId, 
-                  ['listings'] = {}
-               }
-            end
-            
-            table.insert(lewdb[name]['listings'], {texture, count, quality, canUse, level, levelColHeader, minBid, minIncrement, buyoutPrice, bidAmount, highBidder, bidderFullName, owner, ownerFullName, saleStatus});
-            LewAH_scan_ah = false;
-         end
+         LEWAH_AILU();
+         LewAH_scan_ah = false;
       end
       --disable other addons to gaurantee this works.
    elseif (event == 'GET_ITEM_INFO_RECEIVED' and LewAH_store_items == true) then
