@@ -1,0 +1,25 @@
+{
+    "classID": [
+        {"name": "Consumable", "sub": ["Explosives and Devices", "Potion", "Elixir", "Flask", "Scroll", "Fooddrink", "Itemenhancement", "Bandage", "Other"]},
+        {"name": "Container", "sub": ["Bag", "Soul Bag", "Herb Bag", "Enchanting Bag", "Engineering Bag", "Gem Bag", "Mining Bag", "Leatherworking Bag", "Inscription Bag", "Tackle Box", "Cooking Bag"]},
+        {"name": "Weapon", "sub": ["Axe1H", "Axe2H", "Bows", "Guns", "Mace1H", "Mace2H", "Polearm", "Sword1H", "Sword2H", "Warglaive", "Staff", "Bearclaw", "CatClaw", "Unarmed", "Generic", "Dagger", "Thrown", "Obsolete3", "Crossbow", "Wand", "Fishingpole"]},
+        {"name": "Gem", "sub": ["Intellect", "Agility", "Atrength", "Stamina", "Spirit", "Criticalstrike", "Mastery", "Haste", "Versatility", "Other", "Multiplestats", "Artifactrelic"]},
+        {"name": "Armor", "sub": ["Miscellaneous", "Cloth", "Leather", "Mail", "Plate", "Cosmetic", "Shield", "Libram", "Idol", "Totem", "Sigil", "Relic"]},
+        {"name": "Reagent", "sub": ["Reagent", "Keystone", "ContextToken"]},
+        {"name": "Projectile", "sub": ["Wand", "Bolt", "Arrow", "Bullet", "Thrown"]},
+        {"name": "Tradegoods", "sub": ["Trade Goods", "Parts", "Explosives", "Devices", "Jewelcrafting", "Cloth", "Leather", "Metal & Stone", "Cooking", "Herb", "Elemental", "Other", "Enchanting", "Materials", "Item Enchantment", "Weapon Enchantment", "Inscription", "Explosives & Devices"]},
+        {"name": "ItemEnhancement", "sub": ["Head", "Neck", "Shoulder", "Cloak", "Chest", "Wrist", "Hands", "Waist", "Legs", "Feet", "Finger", "Weapon", "Two-Handed Weapon", "Shield/Off-Hand", "Misc"]},
+        {"name": "Recipe", "sub": ["Book", "Leatherworking", "Tailoring", "Engineering", "Blacksmithing", "Cooking", "Alchemy", "FirstAid", "Enchanting", "Fishing", "Jewelcrafting", "Inscription"]},
+        {"name": "CurrencyTokenObsolete", "sub": ["Money"]},
+        {"name": "Quiver", "sub": ["Quiver", "Bolt", "Quiver", "Ammo Pouch"]},
+        {"name": "Questitem", "sub": ["Quest"]},
+        {"name": "Key", "sub": ["Key", "Lockpick"]},
+        {"name": "PermanentObsolete", "sub": ["Permanent"]},
+        {"name": "Miscellaneous", "sub": ["Junk", "Reagent", "CompanionPet", "Holiday", "Other", "Mount", "MountEquipment"]},
+        {"name": "Glyph", "sub": ["FARTSOCK", "Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Death Knight", "Shaman", "Mage", "Warlock", "Monk", "Druid", "Demon Hunter"]},
+        {"name": "Battlepet", "sub": ["Humanoid", "Dragonkin", "Flying", "Undead", "Critter", "Magic", "Elemental", "Beast", "Aquatic", "Mechanical"]},
+        {"name": "WoWToken", "sub": ["WoW Token"]},
+        {"name": "Profession", "sub": ["Blacksmithing", "Leatherworking", "Alchemy", "Herbalism", "Cooking", "Mining", "Tailoring", "Engineering", "Enchanting", "Fishing", "Skinning", "Jewelcrafting", "Inscription"]}
+    ], 
+    "itemQuality": ["Poor", "Common", "Uncommon", "Rare", "Epic", "Legendary", "Artifact", "Heirloom", "WoW Token"]
+}
