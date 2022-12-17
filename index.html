@@ -3,7 +3,7 @@
 <head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>LewAH</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>index.html</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 
 
 
@@ -14579,6 +14579,10 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Made by Lewis Long and Nathan Sandler
+CMSC351 Fall22 Final Project</p>
+<p>This project parses and analyzes auction house data from the massively popular MMORPG video game World of Warcraft</p>
+<p><em>hopefully we got enough done in this project, data collection was very time consuming and me and my partner were both very busy during this finals week</em></p>
 <p>PART 1 : DATA COLLECTION</p>
 <p>This segment will go over the data collection process from the game World of Warcraft. For all intents and purposes you may skip this part if you're just here to learn python and data-analysis as that is the main focus of this project. This is more so for the people with a little extra time or curiousity to spare.</p>
 <p>The World of Warcraft auction house works like you might expect - you put up listings for the items you own and people can either bid on them over a set amount of time or buy them outright at a price you set (often based on the current market value but undercutted slightly). Also to whom it may concern, I play World of Warcraft classic, which is basically a re-release of the game as it was back in the 2000's. There is the "retail" version of WoW which is what is kept up to date and given a new modern-looking expansion every few years but I just simply prefer to play the game as it was back in its glory years. The current version of the game has an official REST API / HTTP query system for querying data but that is not offered to world of warcraft "classic". Therefor I must do things manually from inside the game which is what lead to the long spiel below.</p>
@@ -14587,8 +14591,161 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <p>So what did I decide to do? To make my own addon! This would give me the capability to format my own datastructure and really understand what's happening under the hood. I quickly realized some things. 0.) The API sucks and there's no official documentation just third party websites 1.) to efficiently scan the auction house you must make basically give the server a request to "scan all" which would display every item currently on the auction house on one page. You can only make this request every 15 to 20 minutes 2.) you must loop through every single item currently VIEWABLE on the auction house, as the "scan all" request doesn't actually return anything from the server but rather just sends a request to display auctions. 3.) There are many safety precautions, so in order to save your data you have to write down, in a descriptor file, specifically which variables the game will save off and then the game will take a snapshot of those variables when you logout and save them in a lua file. So with all that said, I begun my scans and on the server which I am currently playing, Maladath-US Alliance, 40,000 listings on average was what you might expect. After hours of head scratching and bug fixing I was finally able to get the game engine to save off my database for me to copy and plop into this project's files. Unforunately, the data files are just snapshots of lua variables (explaining the lua extension) so they will need to be converted if I want to use Pandas in python. Also, I changed up my data structure to something containing many more variables therefor friday's scan is a little lack luster. Also, due to human error I accidentally wrote over saturday's data file which is arguably the most important since prices go way up on the weekend which would've been cool to show.</p>
 <p>There were plenty of bugs found along the way, like some listings lacking information when being scanned by my addon (including the name of all things). This is most likely due to a cache bug since I am trying to read out the auction house before each of the ~40000 listings are cached. After analyzing the code of existing auction house addons I notice that they have very sophisticated query systems to handle chunks of data at a time but unfortunately I do not have time to write a complete addon. All of the bugged listings still return their item ID which I could use to find the item data if I, for instance, made a table of every item in the game and it's information. Well, that's exactly what I did. However, nothing seems to be easy in this part of the project and as much as I wish things would "just work", it seems it's never that easy. So I begun the super fun adventure of scrounging the internet for a barely existent API for the original version of a game that came out 20 years ago to figure out how to basically download the games item data to a readable file. First, the code I wrote to query the game servers for every item in the game immediately crashed my game... over... and over... until I finally found the limit of how many items I could query from the server without absolutely obliterating my pc. So I basically just had to query the server in increments to get all the items. Another note is since the game doesn't save your variables as they update but rather takes a snapshot when you logout or reload your game, I'd crash on reload because it was just too much data for the game to push from memory to disk. After lot's of head scratching and bug fixing I finally had a database of every item in the game.</p>
 <p>With the scan data and the item data combined, we now had an awesome set of data to preform analysis on.</p>
-<p>If you're interested, you may find my addon in the WoW_AddOn folder. LewAH (Lew Auction House) sure sounds like lua doesn't it ;)</p>
+<p>If you're interested, you may find my addon in the WoW_AddOn folder. LewAH (Lew Auction House) sure sounds like lua doesn't it ;) also it is below</p>
 <p><em>side note that if you do decide to use my addon know that it is absolutely not standalone and must be manually ran in a command prompt and its so finicky I wouldn't even recommend it without asking me</em></p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<div class="highlight"><pre><span></span><span class="n">message</span><span class="p">(</span><span class="s2">&quot;Greetings! LewAH is up and running.&quot;</span><span class="p">);</span>
+
+<span class="n">lewdb</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="n">LewAH_scan_date</span> <span class="o">=</span> <span class="n">date</span><span class="p">(</span><span class="s2">&quot;%m/%d/%y %H:%M:%S&quot;</span><span class="p">);</span>
+
+<span class="n">LewAH_scan_ah</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="n">LewAH_store_items</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+
+
+
+
+<span class="c1">--stores all auction house data in lewdb</span>
+<span class="n">SLASH_LEWAH1</span> <span class="o">=</span> <span class="s2">&quot;/lewah&quot;</span><span class="p">;</span>
+<span class="kr">function</span> <span class="nc">SlashCmdList</span><span class="p">.</span><span class="nf">LEWAH</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+   <span class="kd">local</span> <span class="n">canQuery</span><span class="p">,</span><span class="n">canQueryAll</span> <span class="o">=</span> <span class="n">CanSendAuctionQuery</span><span class="p">();</span>
+   <span class="kr">if</span> <span class="p">(</span><span class="n">canQueryAll</span> <span class="o">==</span> <span class="kc">true</span><span class="p">)</span> <span class="kr">then</span>
+      <span class="n">LewAH_scan_ah</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="n">QueryAuctionItems</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="kc">nil</span><span class="p">,</span> <span class="kc">nil</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">true</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="kc">nil</span><span class="p">);</span>
+   <span class="kr">else</span>
+      <span class="n">message</span><span class="p">(</span><span class="s1">&#39;Can not query all yet, goober.&#39;</span><span class="p">);</span>
+   <span class="kr">end</span>      
+<span class="kr">end</span>
+
+<span class="n">SLASH_LEWAHMAN1</span> <span class="o">=</span> <span class="s2">&quot;/lewahmanual&quot;</span><span class="p">;</span>
+<span class="kr">function</span> <span class="nc">SlashCmdList</span><span class="p">.</span><span class="nf">LEWAHMAN</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+   <span class="n">LEWAH_AILU</span><span class="p">();</span>
+<span class="kr">end</span>
+
+
+
+
+
+<span class="c1">--stores all item data from the game files. This only needs to be run once every expansion.</span>
+<span class="c1">--disable addons for this to work fully, but will still need to be run multiple times because caching bugs.</span>
+<span class="c1">--runs in whatever increment doesn&#39;t blow up your computer, which for me is 10,000</span>
+<span class="c1">--run this up to item 60000 to scrape 99% of items. /reload often to save data state</span>
+<span class="c1">--then run lahdbfull for the stragglers which have oddly large and random id&#39;s</span>
+<span class="n">SLASH_LEWDB1</span> <span class="o">=</span> <span class="s2">&quot;/lewdb&quot;</span><span class="p">;</span>
+<span class="kr">function</span> <span class="nc">SlashCmdList</span><span class="p">.</span><span class="nf">LEWDB</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
+   <span class="kd">local</span> <span class="n">inc</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">;</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;LewDB collecting item information from &#39;</span><span class="o">..</span><span class="nb">tostring</span><span class="p">(</span><span class="n">start</span><span class="p">)</span><span class="o">..</span> <span class="s2">&quot; to &quot;</span><span class="o">..</span><span class="nb">tostring</span><span class="p">(</span><span class="n">start</span><span class="o">+</span><span class="n">inc</span><span class="p">));</span>
+   <span class="n">LewAH_store_items</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+   <span class="kd">local</span> <span class="n">all_clear_flag</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+
+   <span class="kr">for</span> <span class="n">i</span> <span class="o">=</span> <span class="n">start</span><span class="p">,</span> <span class="p">(</span><span class="n">start</span><span class="o">+</span><span class="n">inc</span><span class="p">),</span> <span class="mi">1</span> <span class="kr">do</span>
+      <span class="kr">if</span><span class="p">(</span><span class="n">lewdb</span><span class="p">[</span><span class="nb">tostring</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="o">==</span> <span class="kc">nil</span><span class="p">)</span> <span class="kr">then</span>
+         <span class="kd">local</span> <span class="n">itemName</span><span class="p">,</span> <span class="n">itemLink</span><span class="p">,</span> <span class="n">itemRarity</span><span class="p">,</span> <span class="n">itemLevel</span><span class="p">,</span> <span class="n">itemMinLevel</span><span class="p">,</span> <span class="n">itemType</span><span class="p">,</span> <span class="n">itemSubType</span><span class="p">,</span> <span class="n">itemStackCount</span><span class="p">,</span> 
+         <span class="n">itemEquipLoc</span><span class="p">,</span> <span class="n">itemTexture</span><span class="p">,</span> <span class="n">itemSellPrice</span><span class="p">,</span> <span class="n">classID</span><span class="p">,</span> <span class="n">subclassID</span><span class="p">,</span> <span class="n">bindType</span><span class="p">,</span> <span class="n">expacID</span><span class="p">,</span> <span class="n">setID</span><span class="p">,</span> <span class="n">isCraftingReagent</span> <span class="o">=</span> <span class="n">GetItemInfo</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+
+         <span class="kr">if</span> <span class="n">itemName</span> <span class="o">~=</span> <span class="kc">nil</span> <span class="kr">then</span> 
+            <span class="n">all_clear_flag</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+            <span class="n">lewdb</span><span class="p">[</span><span class="nb">tostring</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="p">{</span><span class="n">itemName</span><span class="p">,</span> <span class="n">itemLink</span><span class="p">,</span> <span class="n">itemRarity</span><span class="p">,</span> <span class="n">itemLevel</span><span class="p">,</span> <span class="n">itemMinLevel</span><span class="p">,</span> <span class="n">itemType</span><span class="p">,</span> <span class="n">itemSubType</span><span class="p">,</span> <span class="n">itemStackCount</span><span class="p">,</span> 
+               <span class="n">itemEquipLoc</span><span class="p">,</span> <span class="n">itemTexture</span><span class="p">,</span> <span class="n">itemSellPrice</span><span class="p">,</span> <span class="n">classID</span><span class="p">,</span> <span class="n">subclassID</span><span class="p">,</span> <span class="n">bindType</span><span class="p">,</span> <span class="n">expacID</span><span class="p">,</span> <span class="n">setID</span><span class="p">,</span> <span class="n">isCraftingReagent</span><span class="p">};</span>
+         <span class="kr">end</span>
+      <span class="kr">end</span>
+   <span class="kr">end</span>
+   <span class="kr">if</span> <span class="p">(</span><span class="n">all_clear_flag</span> <span class="o">==</span> <span class="kc">true</span><span class="p">)</span> <span class="kr">then</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\124</span><span class="s2">cffFFFF00LewAH =&gt; Items &quot;</span><span class="o">..</span><span class="n">start</span><span class="o">..</span><span class="s2">&quot; to &quot;</span><span class="o">..</span><span class="p">(</span><span class="n">start</span><span class="o">+</span><span class="n">inc</span><span class="p">)</span><span class="o">..</span><span class="s2">&quot; are most likely all in the database but run again to be sure.</span><span class="se">\124</span><span class="s2">r&quot;</span><span class="p">);</span>
+   <span class="kr">else</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\124</span><span class="s2">cffFF0000LewAH =&gt; Items &quot;</span><span class="o">..</span><span class="n">start</span><span class="o">..</span><span class="s2">&quot; to &quot;</span><span class="o">..</span><span class="p">(</span><span class="n">start</span><span class="o">+</span><span class="n">inc</span><span class="p">)</span><span class="o">..</span><span class="s2">&quot; were not all included. Run again.</span><span class="se">\124</span><span class="s2">r&quot;</span><span class="p">);</span>
+   <span class="kr">end</span>
+<span class="kr">end</span>
+
+<span class="c1">--only run this after running lahdb maybe about 6 times (1-10001, 10000-20000, etc)</span>
+<span class="n">SLASH_LEWDBFULL1</span> <span class="o">=</span> <span class="s2">&quot;/lewdbfull&quot;</span><span class="p">;</span>
+<span class="kr">function</span> <span class="nc">SlashCmdList</span><span class="p">.</span><span class="nf">LEWDBFULL</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+   <span class="n">LewAH_store_items</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+   <span class="kd">local</span> <span class="n">max</span> <span class="o">=</span> <span class="mi">225000</span><span class="p">;</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;LewDB collecting item information from 1 to &#39;</span><span class="o">..</span><span class="nb">tostring</span><span class="p">(</span><span class="n">max</span><span class="p">));</span>
+   <span class="kr">for</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">max</span><span class="p">,</span> <span class="mi">1</span> <span class="kr">do</span>
+      <span class="kr">if</span><span class="p">(</span><span class="n">lewdb</span><span class="p">[</span><span class="nb">tostring</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="o">==</span> <span class="kc">nil</span><span class="p">)</span> <span class="kr">then</span>
+         <span class="kd">local</span> <span class="n">itemName</span><span class="p">,</span> <span class="n">itemLink</span><span class="p">,</span> <span class="n">itemRarity</span><span class="p">,</span> <span class="n">itemLevel</span><span class="p">,</span> <span class="n">itemMinLevel</span><span class="p">,</span> <span class="n">itemType</span><span class="p">,</span> <span class="n">itemSubType</span><span class="p">,</span> <span class="n">itemStackCount</span><span class="p">,</span> 
+         <span class="n">itemEquipLoc</span><span class="p">,</span> <span class="n">itemTexture</span><span class="p">,</span> <span class="n">itemSellPrice</span><span class="p">,</span> <span class="n">classID</span><span class="p">,</span> <span class="n">subclassID</span><span class="p">,</span> <span class="n">bindType</span><span class="p">,</span> <span class="n">expacID</span><span class="p">,</span> <span class="n">setID</span><span class="p">,</span> <span class="n">isCraftingReagent</span> <span class="o">=</span> <span class="n">GetItemInfo</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+
+         <span class="kr">if</span> <span class="n">itemName</span> <span class="o">~=</span> <span class="kc">nil</span> <span class="kr">then</span> 
+            <span class="n">lewdb</span><span class="p">[</span><span class="nb">tostring</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="p">{</span><span class="n">itemName</span><span class="p">,</span> <span class="n">itemLink</span><span class="p">,</span> <span class="n">itemRarity</span><span class="p">,</span> <span class="n">itemLevel</span><span class="p">,</span> <span class="n">itemMinLevel</span><span class="p">,</span> <span class="n">itemType</span><span class="p">,</span> <span class="n">itemSubType</span><span class="p">,</span> <span class="n">itemStackCount</span><span class="p">,</span> 
+               <span class="n">itemEquipLoc</span><span class="p">,</span> <span class="n">itemTexture</span><span class="p">,</span> <span class="n">itemSellPrice</span><span class="p">,</span> <span class="n">classID</span><span class="p">,</span> <span class="n">subclassID</span><span class="p">,</span> <span class="n">bindType</span><span class="p">,</span> <span class="n">expacID</span><span class="p">,</span> <span class="n">setID</span><span class="p">,</span> <span class="n">isCraftingReagent</span><span class="p">};</span>
+               <span class="nb">print</span><span class="p">(</span><span class="nb">tostring</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">..</span><span class="s2">&quot; successfully added&quot;</span><span class="p">);</span>
+         <span class="kr">end</span>
+      <span class="kr">end</span>
+   <span class="kr">end</span>
+<span class="kr">end</span>
+
+
+
+<span class="kr">function</span> <span class="nf">LEWAH_AILU</span> <span class="p">()</span>
+   <span class="n">lewdb</span> <span class="o">=</span> <span class="p">{};</span>
+   <span class="n">LewAH_scan_date</span> <span class="o">=</span> <span class="n">date</span><span class="p">(</span><span class="s2">&quot;%m/%d/%y %H:%M:%S&quot;</span><span class="p">)</span>
+   <span class="n">lewdb</span><span class="p">[</span><span class="s1">&#39;scanDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">LewAH_scan_date</span><span class="p">;</span>
+   <span class="kr">for</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1000000</span><span class="p">,</span> <span class="mi">1</span> <span class="kr">do</span>
+      <span class="kd">local</span> <span class="n">name</span><span class="p">,</span> <span class="n">texture</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">quality</span><span class="p">,</span> <span class="n">canUse</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">levelColHeader</span><span class="p">,</span> <span class="n">minBid</span><span class="p">,</span>
+      <span class="n">minIncrement</span><span class="p">,</span> <span class="n">buyoutPrice</span><span class="p">,</span> <span class="n">bidAmount</span><span class="p">,</span> <span class="n">highBidder</span><span class="p">,</span> <span class="n">bidderFullName</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span>
+      <span class="n">ownerFullName</span><span class="p">,</span> <span class="n">saleStatus</span><span class="p">,</span> <span class="n">itemId</span><span class="p">,</span> <span class="n">hasAllInfo</span> <span class="o">=</span> <span class="n">GetAuctionItemInfo</span><span class="p">(</span><span class="s2">&quot;list&quot;</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
+
+      <span class="kr">if</span> <span class="p">(</span><span class="n">name</span> <span class="o">==</span> <span class="kc">nil</span><span class="p">)</span> <span class="kr">then</span>
+         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;LewAH hit a null value on item &quot;</span> <span class="o">..</span> <span class="n">y</span><span class="p">);</span>
+         <span class="kr">return</span><span class="p">;</span>
+      <span class="kr">end</span>
+
+      <span class="kr">if</span> <span class="p">(</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="kr">then</span>
+         <span class="n">name</span> <span class="o">=</span> <span class="nb">tostring</span><span class="p">(</span><span class="n">itemId</span><span class="p">)</span>
+      <span class="kr">end</span>
+
+      <span class="kr">if</span> <span class="p">(</span><span class="n">lewdb</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">==</span> <span class="kc">nil</span><span class="p">)</span> <span class="kr">then</span>
+         <span class="n">lewdb</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">itemId</span><span class="p">,</span> 
+            <span class="p">[</span><span class="s1">&#39;listings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+         <span class="p">}</span>
+      <span class="kr">end</span>
+
+      <span class="nb">table.insert</span><span class="p">(</span><span class="n">lewdb</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;listings&#39;</span><span class="p">],</span> <span class="p">{</span><span class="n">texture</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">quality</span><span class="p">,</span> <span class="n">canUse</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">levelColHeader</span><span class="p">,</span> <span class="n">minBid</span><span class="p">,</span> <span class="n">minIncrement</span><span class="p">,</span> <span class="n">buyoutPrice</span><span class="p">,</span> <span class="n">bidAmount</span><span class="p">,</span> <span class="n">highBidder</span><span class="p">,</span> <span class="n">bidderFullName</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">ownerFullName</span><span class="p">,</span> <span class="n">saleStatus</span><span class="p">});</span>
+   <span class="kr">end</span>
+<span class="kr">end</span>
+
+
+<span class="kd">local</span> <span class="kr">function</span> <span class="nf">OnEvent</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="p">...)</span>
+   <span class="kr">if</span><span class="p">(</span><span class="n">event</span> <span class="o">==</span> <span class="s1">&#39;AUCTION_ITEM_LIST_UPDATE&#39;</span><span class="p">)</span> <span class="kr">then</span>
+      <span class="kr">if</span> <span class="p">(</span><span class="n">LewAH_scan_ah</span> <span class="o">==</span> <span class="kc">true</span><span class="p">)</span> <span class="kr">then</span>
+         <span class="n">LEWAH_AILU</span><span class="p">();</span>
+         <span class="n">LewAH_scan_ah</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="kr">end</span>
+      <span class="c1">--disable other addons to gaurantee this works.</span>
+   <span class="kr">elseif</span> <span class="p">(</span><span class="n">event</span> <span class="o">==</span> <span class="s1">&#39;GET_ITEM_INFO_RECEIVED&#39;</span> <span class="ow">and</span> <span class="n">LewAH_store_items</span> <span class="o">==</span> <span class="kc">true</span><span class="p">)</span> <span class="kr">then</span>
+      <span class="kr">if</span> <span class="p">(</span><span class="n">arg1</span> <span class="o">==</span> <span class="kc">nil</span><span class="p">)</span> <span class="kr">then</span>
+         <span class="kr">return</span><span class="p">;</span>
+      <span class="kr">end</span>
+      <span class="kd">local</span> <span class="n">itemName</span><span class="p">,</span> <span class="n">itemLink</span><span class="p">,</span> <span class="n">itemRarity</span><span class="p">,</span> <span class="n">itemLevel</span><span class="p">,</span> <span class="n">itemMinLevel</span><span class="p">,</span> <span class="n">itemType</span><span class="p">,</span> <span class="n">itemSubType</span><span class="p">,</span> <span class="n">itemStackCount</span><span class="p">,</span> 
+      <span class="n">itemEquipLoc</span><span class="p">,</span> <span class="n">itemTexture</span><span class="p">,</span> <span class="n">itemSellPrice</span><span class="p">,</span> <span class="n">classID</span><span class="p">,</span> <span class="n">subclassID</span><span class="p">,</span> <span class="n">bindType</span><span class="p">,</span> <span class="n">expacID</span><span class="p">,</span> <span class="n">setID</span><span class="p">,</span> <span class="n">isCraftingReagent</span> <span class="o">=</span> <span class="n">GetItemInfo</span><span class="p">(</span><span class="n">arg1</span><span class="p">);</span>
+      <span class="kr">if</span> <span class="n">itemName</span> <span class="o">~=</span> <span class="kc">nil</span> <span class="kr">then</span> 
+         <span class="nb">print</span><span class="p">(</span><span class="nb">tostring</span><span class="p">(</span><span class="n">arg1</span><span class="p">)</span><span class="o">..</span><span class="s2">&quot; from event&quot;</span><span class="p">);</span>
+         <span class="n">lewdb</span><span class="p">[</span><span class="nb">tostring</span><span class="p">(</span><span class="n">arg1</span><span class="p">)]</span> <span class="o">=</span> <span class="p">{</span><span class="n">itemName</span><span class="p">,</span> <span class="n">itemLink</span><span class="p">,</span> <span class="n">itemRarity</span><span class="p">,</span> <span class="n">itemLevel</span><span class="p">,</span> <span class="n">itemMinLevel</span><span class="p">,</span> <span class="n">itemType</span><span class="p">,</span> <span class="n">itemSubType</span><span class="p">,</span> <span class="n">itemStackCount</span><span class="p">,</span> 
+            <span class="n">itemEquipLoc</span><span class="p">,</span> <span class="n">itemTexture</span><span class="p">,</span> <span class="n">itemSellPrice</span><span class="p">,</span> <span class="n">classID</span><span class="p">,</span> <span class="n">subclassID</span><span class="p">,</span> <span class="n">bindType</span><span class="p">,</span> <span class="n">expacID</span><span class="p">,</span> <span class="n">setID</span><span class="p">,</span> <span class="n">isCraftingReagent</span><span class="p">};</span>
+      <span class="kr">end</span>
+      <span class="n">LewAH_store_items</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+   <span class="kr">end</span>
+<span class="kr">end</span>
+
+<span class="kd">local</span> <span class="n">EventFrame</span> <span class="o">=</span> <span class="n">CreateFrame</span><span class="p">(</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;EventFrame&quot;</span><span class="p">)</span>
+<span class="n">EventFrame</span><span class="p">:</span><span class="n">RegisterEvent</span><span class="p">(</span><span class="s2">&quot;AUCTION_ITEM_LIST_UPDATE&quot;</span><span class="p">);</span>
+<span class="n">EventFrame</span><span class="p">:</span><span class="n">RegisterEvent</span><span class="p">(</span><span class="s2">&quot;GET_ITEM_INFO_RECEIVED&quot;</span><span class="p">);</span>
+<span class="n">EventFrame</span><span class="p">:</span><span class="n">SetScript</span><span class="p">(</span><span class="s2">&quot;OnEvent&quot;</span><span class="p">,</span> <span class="n">OnEvent</span><span class="p">);</span>
+</pre></div>
 
 </div>
 </div>
@@ -15871,7 +16028,7 @@ Laughing Skull Bracelets profit:  [&#39;0&#39;, &#39;18&#39;, &#39;28&#39;]
 
 
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>&lt;matplotlib.legend.Legend at 0x7fc1514a1070&gt;</pre>
+<pre>&lt;matplotlib.legend.Legend at 0x7fc151476640&gt;</pre>
 </div>
 
 </div>
