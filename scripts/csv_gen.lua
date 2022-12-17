@@ -1,5 +1,5 @@
 -- change filename to scan data (ex. "Dec_12")
-filename = "Dec_14"
+filename = "Dec_16"
 
 listings = {"texture", "count", "quality", "canUse", "level",
  	"levelColHeader", "minBid", "minIncrement", "buyoutPrice",
